@@ -36,6 +36,15 @@ use Kirby\Toolkit\Str;
         <?= $page->email()->isNotEmpty() ? $page->email()->html() . '<br>' : '' ?>
       </p>
     </div>
+    <?php if ($page->cancelled()->toBool()): ?>
+      <div class="invoice__cancelled">
+        <h2>Cancelled</h2>
+        <p>
+          This invoice has been cancelled. The original license keys are no longer valid.<br>
+          Your payment has been refunded to your original payment method: <?= $page->paymentMethodName() ?>.
+        </p>
+      </div>
+    <?php endif; ?>
     <div class="invoice__purchase">
       <h2>Purchase</h2>
       <p>You bought <?= $quantity === 1 ? '<strong>one</strong> Merx License' : '<strong>' . $quantity . '</strong> Merx Licenses' ?>. You have chosen <strong><?= $page->paymentMethodName() ?></strong> as payment method.</p>
@@ -80,7 +89,11 @@ use Kirby\Toolkit\Str;
       <h2><?= count($licenses) === 1 ? 'License Key' : 'License Keys' ?></h2>
       <p>
       <?php foreach ($licenses as $item) :?>
-        <code><?= $item ?></code><br>
+        <?php if ($page->cancelled()->toBool()): ?>
+          <del><code><?= maskLicenseKey($item) ?></code></del><br>
+          <?php else: ?>
+          <code><?= $item ?></code><br>
+        <?php endif; ?>
       <?php endforeach; ?>
       </p>
     </div>

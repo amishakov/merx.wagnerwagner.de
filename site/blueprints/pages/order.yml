@@ -53,6 +53,8 @@ tabs:
               legal:
                 type: toggle
                 required: true
+              cancelled:
+                type: toggle
   payment:
     sections:
       payment-method: sections/payment-method

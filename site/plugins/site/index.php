@@ -8,6 +8,24 @@ use Kirby\Toolkit\Html;
 require_once 'country-list.php';
 $licenseBase = file_get_contents('.license-base', FILE_USE_INCLUDE_PATH);
 
+function maskLicenseKey(string $license): string
+{
+  $parts = explode('-', $license);
+  if (count($parts) !== 3 || $parts[0] !== 'MERX') {
+    return $license;
+  }
+
+  $maskSegment = function (string $segment): string {
+    $length = strlen($segment);
+    if ($length <= 2) {
+      return str_repeat('X', $length);
+    }
+    return $segment[0] . str_repeat('X', $length - 2) . $segment[$length - 1];
+  };
+
+  return 'MERX-' . $maskSegment($parts[1]) . '-' . $maskSegment($parts[2]);
+}
+
 function niceExcerpt($string, $query) {
   $start = stripos($string, $query) - 100;
   $start = $start < 0 ? 0 : $start;
